@@ -1,0 +1,25 @@
+version: "3.9"
+
+services:
+  user-mongodb:
+    image: mongo:6
+    container_name: user-mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  user-management-service:
+    build: .
+    container_name: user-management-service
+    ports:
+      - "5000:5000"
+    environment:
+      PORT: 5000
+      # Must match your app code: process.env.MONGO_URI
+      MONGO_URI: mongodb://user-mongodb:27017/user_management
+    depends_on:
+      - user-mongodb
+
+volumes:
+  mongo_data:
