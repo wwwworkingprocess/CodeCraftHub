@@ -1,6 +1,9 @@
 const express = require("express");
 const cors = require("cors");
 
+const userRoutes = require("./routes/userRoutes");
+const errorHandler = require("./middleware/errorHandler");
+
 const app = express();
 
 // Middleware
@@ -15,5 +18,16 @@ app.get("/health", (req, res) => {
     timestamp: new Date().toISOString()
   });
 });
+
+// Routes
+app.use("/api/users", userRoutes);
+
+// 404 handler for unknown routes
+app.use((req, res) => {
+  res.status(404).json({ success: false, message: "Route not found" });
+});
+
+// Error handler (must be last)
+app.use(errorHandler);
 
 module.exports = app;
